@@ -37,7 +37,7 @@
 --  should be replaced by efficient machine-specific code.
 
 with Ada.Unchecked_Conversion;
-with System;
+--  with System;
 
 package body System.Fat_Gen is
 
@@ -128,7 +128,7 @@ package body System.Fat_Gen is
    function Compose (Fraction : T; Exponent : UI) return T is
       Arg_Frac : T;
       Arg_Exp  : UI;
-      pragma Unreferenced (Arg_Exp);
+      --  pragma Unreferenced (Arg_Exp);
    begin
       Decompose (Fraction, Arg_Frac, Arg_Exp);
       return Scaling (Arg_Frac, Exponent);
@@ -137,12 +137,29 @@ package body System.Fat_Gen is
    ---------------
    -- Copy_Sign --
    ---------------
+   function Is_Negative (V : T) return Boolean;
+
+   function Is_Negative (V : T) return Boolean is
+   begin
+      if V < 0.0 then
+         return True;
+
+      elsif V > 0.0 then
+         return False;
+
+      elsif not T'Signed_Zeros then
+         return False;
+
+      else
+         return T'Copy_Sign (1.0, V) < 0.0;
+      end if;
+   end Is_Negative;
 
    function Copy_Sign (Value, Sign : T) return T is
       Result : T;
 
-      function Is_Negative (V : T) return Boolean;
-      pragma Import (Intrinsic, Is_Negative);
+      --  function Is_Negative (V : T) return Boolean;
+      --      pragma Import (Intrinsic, Is_Negative);
 
    begin
       Result := abs Value;
@@ -257,7 +274,7 @@ package body System.Fat_Gen is
    function Exponent (X : T) return UI is
       X_Frac : T;
       X_Exp  : UI;
-      pragma Unreferenced (X_Frac);
+      --  pragma Unreferenced (X_Frac);
    begin
       Decompose (X, X_Frac, X_Exp);
       return X_Exp;
@@ -286,7 +303,7 @@ package body System.Fat_Gen is
    function Fraction (X : T) return T is
       X_Frac : T;
       X_Exp  : UI;
-      pragma Unreferenced (X_Exp);
+      --  pragma Unreferenced (X_Exp);
    begin
       Decompose (X, X_Frac, X_Exp);
       return X_Frac;
@@ -483,7 +500,7 @@ package body System.Fat_Gen is
       P_Even   : Boolean;
 
       Arg_Frac : T;
-      pragma Unreferenced (Arg_Frac);
+      --  pragma Unreferenced (Arg_Frac);
 
    begin
       if Y = 0.0 then

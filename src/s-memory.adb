@@ -45,8 +45,8 @@ package body System.Memory is
    pragma Import (C, Heap_Start, "__heap_start");
    --  The address of the variable is the start of the heap
 
-   Heap_End : Character;
-   pragma Import (C, Heap_End, "__heap_end");
+--   Heap_End : Character;
+--   pragma Import (C, Heap_End, "__heap_end");
    --  The address of the variable is the end of the heap
 
    Top : aliased Address := Heap_Start'Address;
@@ -103,11 +103,11 @@ package body System.Memory is
 
       --  Detect too large allocation
 
-      if Max_Size >= Storage_Count (Heap_End'Address - Res) then
-         pragma Annotate
-           (CodePeer, Intentional, "range check", "defensive code");
-         raise Storage_Error;
-      end if;
+--      if Max_Size >= Storage_Count (Heap_End'Address - Res) then
+--         pragma Annotate
+--           (CodePeer, Intentional, "range check", "defensive code");
+--         raise Storage_Error;
+--      end if;
 
       --  Update the top of the heap.
       Top := Res + Max_Size;

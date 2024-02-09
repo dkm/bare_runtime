@@ -29,7 +29,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with System; use System;
+--  with System; use System;
 with System.Memory_Types; use System.Memory_Types;
 
 package body System.Memory_Set is

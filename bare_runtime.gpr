@@ -5,10 +5,12 @@ project Bare_Runtime is
   for Languages use ("Ada");
 
   for Runtime ("Ada") use Project'Project_Dir;
-
+  for Library_Support use "static_only";
   for Library_Auto_Init use "False";
   for Library_Name use "gnat";
+
   for Library_Kind use "static";
+  for Library_Builder  use "/usr/libexec/gprbuild/gprlib";
 
   for Library_Dir use "adalib";
   for Object_Dir use "obj";
