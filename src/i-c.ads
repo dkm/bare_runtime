@@ -37,7 +37,7 @@
 --  with C. All functions have been removed from the original spec.
 
 package Interfaces.C is
-   pragma No_Elaboration_Code_All;
+--   pragma No_Elaboration_Code_All;
    pragma Pure;
 
    --  Declaration's based on C's <limits.h>
@@ -101,5 +101,49 @@ package Interfaces.C is
    wide_nul : constant wchar_t := wchar_t'First;
 
    type wchar_array is array (size_t range <>) of aliased wchar_t;
+
+   function To_C
+     (Item       : String;
+      Append_Nul : Boolean := True) return char_array;
+
+   function To_C (Item : Character) return char;
+   --  with
+     --  Pre  => not (Append_Nul = False and then Item'Length = 0),
+     --  Post => To_C'Result'First = 0
+     --    and then To_C'Result'Length =
+     --      (if Append_Nul then Item'Length + 1 else Item'Length)
+     --    and then (for all J in Item'Range =>
+     --                To_C'Result (size_t (J - Item'First)) = To_C (Item (J)))
+     --    and then (if Append_Nul then To_C'Result (To_C'Result'Last) = nul);
+   --  The result of To_C is a char_array value of length Item'Length (if
+   --  Append_Nul is False) or Item'Length+1 (if Append_Nul is True). The lower
+   --  bound is 0. For each component Item(I), the corresponding component
+   --  in the result is To_C applied to Item(I). The value nul is appended if
+   --  Append_Nul is True. If Append_Nul is False and Item'Length is 0, then
+   --  To_C propagates Constraint_Error.
+
+   procedure To_C
+     (Item       : String;
+      Target     : out char_array;
+      Count      : out size_t;
+      Append_Nul : Boolean := True);
+   --  with
+   --  Relaxed_Initialization => Target,
+   --  Pre  => Target'Length >=
+   --    (if Append_Nul then Item'Length + 1 else Item'Length),
+   --  Post => Count = (if Append_Nul then Item'Length + 1 else Item'Length)
+   --    and then
+   --      (if Count /= 0 then
+   --        Target (Target'First .. Target'First + (Count - 1))'Initialized)
+   --    and then
+   --      (for all J in Item'Range =>
+   --        Target (Target'First + size_t (J - Item'First)) = To_C (Item (J)))
+   --    and then
+   --      (if Append_Nul then Target (Target'First + (Count - 1)) = nul);
+   --  For procedure To_C, each element of Item is converted (via the To_C
+   --  function) to a char, which is assigned to the corresponding element of
+   --  Target. If Append_Nul is True, nul is then assigned to the next element
+   --  of Target. In either case, Count is set to the number of Target elements
+   --  assigned. If Target is not long enough, Constraint_Error is propagated.
 
 end Interfaces.C;
