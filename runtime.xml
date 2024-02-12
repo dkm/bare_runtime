@@ -28,7 +28,7 @@
 
    package Linker is
       for Required_Switches use Linker'Required_Switches &
-        ("-Wl,-L${RUNTIME_DIR(Ada)}/adalib", "-nostartfiles", "-nolibc") &
+        ("-Wl,-L${RUNTIME_DIR(Ada)}/adalib") &
          Compiler.Common_Required_Switches;
    end Linker;
 ]]>
