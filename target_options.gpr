@@ -5,7 +5,7 @@
 
 abstract project Target_Options is
 
-  type Build_Type is ("Production", "Debug", "Assert", "Gnatcov");
+  type Build_Type is ("Production", "Debug", "Assert");
   Build : Build_Type := external ("RUNTIME_BUILD", "Production");
 
   --  COMFLAGS here is common flags (used for C and Ada).
@@ -33,10 +33,6 @@ abstract project Target_Options is
         --  some systems or could be too slow.
         COMFLAGS := COMFLAGS & ("-O");
         ADAFLAGS := ADAFLAGS & ("-gnata");
-     when "Gnatcov" =>
-        --  For coverage
-        COMFLAGS := COMFLAGS & ("-O0", "-g", "-fdump-scos",
-                                "-fpreserve-control-flow");
   end case;
 
   --  Concatenate with common flags
