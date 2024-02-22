@@ -32,8 +32,6 @@
 --  Really simple implementation of System.Text_IO for systems without
 --  console.
 
---  with bare_runtime_Config;
-
 package body System.Text_IO is
 
    ---------
@@ -82,9 +80,7 @@ package body System.Text_IO is
       procedure putchar (C : Integer);
       pragma Import (C, putchar, "putchar");
    begin
-      --  if bare_runtime_Config.Enable_Text_IO then
       putchar (Character'Pos (C));
-      --  end if;
    end Put;
 
    ----------------------------

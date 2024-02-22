@@ -4,17 +4,41 @@
   <configuration>
     <config><![CDATA[
 
+   SH_Precision_Mode := external ("KOS_SH4_PRECISION", "-m4-single-only");
+   KOS_Base := external ("KOS_BASE");
+
    package Compiler is
       
-      Common_Required_Switches := 
-        External_As_List ("BARE_RUNTIME_SWITCHES", " ");
-   
+      Common_Required_Switches := (
+        --  External_As_List ("BARE_RUNTIME_SWITCHES", " ");
+        "-fomit-frame-pointer",
+        "-ml",
+        "-matomic-model=soft-imask",
+        "-ftls-model=local-exec",
+        SH_Precision_Mode
+      );
+
+      C_Cpp_Switches := (
+          "-fno-builtin",
+          "-D_arch_dreamcast",
+          "-D_arch_sub_pristine",
+          "-I" & KOS_Base & "/include",
+          "-I" & KOS_Base & "/kernel/arch/dreamcast/include",
+          "-I" & KOS_Base & "/addons/include",
+          "-I" & KOS_Base & "/../kos-ports/include"
+      );
+
       for Leading_Required_Switches ("Ada") use
          Compiler'Leading_Required_Switches ("Ada") &
          Common_Required_Switches;
       for Leading_Required_Switches ("C") use
          Compiler'Leading_Required_Switches ("C") &
-         Common_Required_Switches;
+         Common_Required_Switches &
+         C_Cpp_Switches;
+      for Leading_Required_Switches ("C++") use
+         Compiler'Leading_Required_Switches ("C") &
+         Common_Required_Switches &
+         C_Cpp_Switches;
       for Leading_Required_Switches ("Asm") use
          Compiler'Leading_Required_Switches ("Asm") &
          Common_Required_Switches;
@@ -28,8 +52,20 @@
 
    package Linker is
       for Required_Switches use Linker'Required_Switches &
+        ("-L" & KOS_Base & "/lib/dreamcast",
+         "-L" & KOS_Base & "/addons/lib/dreamcast",
+         "-L" & KOS_Base & "/../kos-ports/lib",
+         "-Wl,-Ttext=0x8c010000",
+         "-nodefaultlibs",
+         "-T" & KOS_Base & "/utils/ldscripts/shlelf.xc") &
         ("-Wl,-L${RUNTIME_DIR(Ada)}/adalib") &
-         Compiler.Common_Required_Switches;
+         Compiler.Common_Required_Switches &
+         ("-lkosutils", "-lGL", "-lm",
+          "-Wl,--start-group",
+            "-lkallisti",
+            "-lc",
+            "-lgcc",
+          "-Wl,--end-group");
    end Linker;
 ]]>
    </config>

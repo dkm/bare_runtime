@@ -29,10 +29,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  Default last chance handler for no propagation runtimes
-
 with Ada.Unchecked_Conversion;
-with System.Machine_Reset;
 
 with GNAT.IO; use GNAT.IO;
 --  We rely on GNAT packages for the output. Usually, Ada predefined units
@@ -67,30 +64,21 @@ is
    end Put;
 
 begin
-   if Bare_Runtime_Config.LCH_Print_Info then
-      Put_Line ("In last chance handler");
+   Put_Line ("In last chance handler");
 
-      if Line /= 0 then
-         Put ("Predefined exception raised at ");
-         Put (Msg);
-         Put (':');
-         Put (Line);
-      else
-         Put ("User defined exception, message: ");
-         Put (Msg);
-      end if;
-
-      New_Line;
-   end if;
-
-   if Bare_Runtime_Config.LCH_Reset then
-      --  Stop the program
-
-      System.Machine_Reset.Stop;
+   if Line /= 0 then
+      Put ("Predefined exception raised at ");
+      Put (Msg);
+      Put (':');
+      Put (Line);
    else
-      --  Endless loop
-      loop
-         null;
-      end loop;
+      Put ("User defined exception, message: ");
+      Put (Msg);
    end if;
+
+   New_Line;
+
+   loop
+      null;
+   end loop;
 end Ada.Exceptions.Last_Chance_Handler;
