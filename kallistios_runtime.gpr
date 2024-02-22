@@ -1,10 +1,11 @@
 with "target_options.gpr";
 
-project Bare_Runtime is
+project KallistiOS_Runtime is
   for Languages use ("Ada");
-   for Target use "sh-elf";
+  for Target use "sh-elf";
 
   for Runtime ("Ada") use Project'Project_Dir;
+
   for Library_Support use "static_only";
   for Library_Auto_Init use "False";
   for Library_Name use "gnat";
@@ -38,17 +39,10 @@ project Bare_Runtime is
      for Switches ("raise-gcc.c") use Target_Options.ALL_CFLAGS
        & ("-fexceptions");
 
-     --  Don't inline System.Machine_Reset otherwise we can loose our common
-     --  exit system.
-
-     for Switches ("s-macres.adb") use Target_Options.ALL_ADAFLAGS
-       & ("-fno-inline");
-
      --  Generate ada_target_properties to give target-specific information
      --  to formal verification tools.
 
      for Switches ("system.ads") use Target_Options.ALL_ADAFLAGS
        & ("-gnatet=" & Project'Project_Dir & "/ada_target_properties");
   end Compiler;
-
-end Bare_Runtime;
+end KallistiOS_Runtime;
